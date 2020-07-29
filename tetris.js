@@ -19,11 +19,11 @@ const nextBase = state => ({})
 
 const nextfall = state => ({})
 
-const nextMove = state => ({})
+const nextMove = () => ([])
 
 const nextPos = state => state.move.length == 0 ? {x: state.pos.x, y: state.pos.y + 1} : {x: state.pos.x + state.move[0].x, y: state.pos.y + 1}
 
-const nextScore = state => ({})
+const nextScore = state => joined(state) ? ({}) : state.score // ** COMPLETE LATER**
 
 const nextShape = state => joined(state) ? [SHAPES[rand(SHAPES.length)]] : state.shape
 
@@ -32,7 +32,7 @@ const nextShape = state => joined(state) ? [SHAPES[rand(SHAPES.length)]] : state
 const initState = () => ({
     rows: 30,
     cols: 20,
-    base: [[]],
+    base: [],
     shape: [LINESHAPE],    
     fall: true,
     score: 0,
@@ -49,5 +49,5 @@ const nextState = state => ({
     fall: nextfall(state),
     score: nextScore(state),
     pos: nextPos(state),
-    move: nextMove(state)
+    move: nextMove()
 })
