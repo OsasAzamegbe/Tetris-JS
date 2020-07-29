@@ -13,6 +13,7 @@ const SHAPES = [SSHAPE, ZSHAPE, TSHAPE, LSHAPE, MIRRORLSHAPE, LINESHAPE, SQUARES
 // functions
 const joined = state => ({})
 const rand = max => Math.floor(Math.random() * max) // returns random number from 0 to max - 1
+const rotateShape = state => ({})
 
 // next values for state properties
 const nextBase = state => ({})
@@ -25,7 +26,7 @@ const nextPos = state => state.move.length == 0 ? {x: state.pos.x, y: state.pos.
 
 const nextScore = state => joined(state) ? ({}) : state.score // ** COMPLETE LATER**
 
-const nextShape = state => joined(state) ? [SHAPES[rand(SHAPES.length)]] : state.shape
+const nextShape = state => joined(state) ? [SHAPES[rand(SHAPES.length)]] : state.move.length != 0 ? rotateShape(state) : state.shape
 
 
 // initial game state
