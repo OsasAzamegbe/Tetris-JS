@@ -78,11 +78,11 @@ const initState = () => ({
     rows: 50,
     cols: 30,
     base: {}, // obj with levels from 0 to rows - 1 as keys storing points (blocks) in arrays
-    shape: L,    
+    shape: T,    
     fall: true,
     score: 0,
     get pos(){
-        return {x: this.cols/2 , y: 0}
+        return {x: (this.cols/2) - 1 , y: 0}
     },
     move: []
 })
