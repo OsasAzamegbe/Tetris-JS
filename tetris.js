@@ -36,7 +36,7 @@ const O = [
     [7, 7],
     [7, 7]
 ]
-const SHAPES = [SSHAPE, ZSHAPE, TSHAPE, LSHAPE, MIRRORLSHAPE, LINESHAPE, SQUARESHAPE]
+const SHAPES = [S, Z, T, L, J, I, O]
 
 // functions
 // remove complete level
@@ -78,12 +78,15 @@ const initState = () => ({
     rows: 50,
     cols: 30,
     base: {}, // obj with levels from 0 to rows - 1 as keys storing points (blocks) in arrays
-    shape: [LINESHAPE],    
+    shape: L,    
     fall: true,
     score: 0,
-    pos: {x: cols / 2, y: 0},
+    get pos(){
+        return {x: this.cols/2 , y: 0}
+    },
     move: []
 })
+
 
 // next game state
 const nextState = state => ({
@@ -96,3 +99,6 @@ const nextState = state => ({
     pos: nextPos(state),
     move: nextMove()
 })
+
+
+module.exports = {initState, nextState, LEFT, RIGHT}
