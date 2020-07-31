@@ -75,8 +75,8 @@ const nextShape = state => willJoin(state) ? [SHAPES[rand(SHAPES.length)]] : sta
 
 // initial game state
 const initState = () => ({
-    rows: 30,
-    cols: 20,
+    rows: 50,
+    cols: 30,
     base: {}, // obj with levels from 0 to rows - 1 as keys storing points (blocks) in arrays
     shape: [LINESHAPE],    
     fall: true,

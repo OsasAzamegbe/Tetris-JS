@@ -1,11 +1,13 @@
 html, body{
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
     background: rgb(5, 5, 5);
-    color: white;
+    text-align: center;
+    height: 100%;
+    color: white;    
+}
+
+canvas{
+    height: 75vh;
+}
+#score{
+    margin: 2rem;
 }
