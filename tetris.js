@@ -63,7 +63,7 @@ const removeComplete = state => {
     return state
 }
 const rotateShape = state => ({})
-const validMove = state => move => {
+const shapePadX = state => {
     let padL = state.shape.length
     let padR = 0
     state.shape.forEach(arr => {
@@ -74,6 +74,10 @@ const validMove = state => move => {
             }
         })
     })
+    return [padL, padR]
+}
+const validMove = state => move => {
+    const [padL, padR] = shapePadX(state)
     return state.pos.x + move.x + padL >= 0 && state.pos.x + move.x + padR < state.cols
 }
 const validPos = state =>{
