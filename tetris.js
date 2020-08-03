@@ -63,8 +63,28 @@ const removeComplete = state => {
     return state
 }
 const rotateShape = state => ({})
-const validMove = state => move => state.pos.x + move.x >= 0 && state.pos.x + move.x + state.shape.length - 1< state.cols
-const validPos = state => state.pos.y + state.shape.length < state.rows // ** fix later to account for empty (zero filled) shape arrays **
+const validMove = state => move => {
+    let padL = state.shape.length
+    let padR = 0
+    state.shape.forEach(arr => {
+        arr.forEach((val, index) => {
+            if (val !== 0) {
+                padL = Math.min(padL, index)
+                padR = Math.max(padR, index)
+            }
+        })
+    })
+    return state.pos.x + move.x + padL >= 0 && state.pos.x + move.x + padR < state.cols
+}
+const validPos = state =>{
+    let padB = 0
+    state.shape.forEach((arr, index) => {
+        if (arr.some(val => val !== 0)){
+            padB = Math.max(padB, index)
+        }
+    })
+    return state.pos.y + padB + 1< state.rows
+}
 const willJoin = state => ({})
 
 // next values for state properties
