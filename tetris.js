@@ -1,4 +1,5 @@
 // variables 
+const DOWN = {x: 0, y: 1}
 const LEFT = {x: -1, y: 0}
 const RIGHT = {x: 1, y: 0}
 const S = [
@@ -38,7 +39,20 @@ const O = [
 ]
 const SHAPES = [S, Z, T, L, J, I, O]
 
+
 // functions
+
+const enqueue = state => move => validMove(state)(move) ? Object.assign(
+    {}, state, {move: state.move.concat([move])}
+) : state
+const joinTop = state => {
+    state = removeComplete(state)
+    // get min level
+    // check if next shape coordinates in base.minLevel
+        // add to that level if not present
+        // create new levels min - 1 for shape coordinates
+}
+const rand = max => Math.floor(Math.random() * max) // returns random number from 0 to max - 1
 // remove complete level
 const removeComplete = state => {
     state.base.keys().forEach((key) => {
@@ -48,15 +62,9 @@ const removeComplete = state => {
     })
     return state
 }
-const joinTop = state => {
-    state = removeComplete(state)
-    // get min level
-    // check if next shape coordinates in base.minLevel
-        // add to that level if not present
-        // create new levels min - 1 for shape coordinates
-}
-const rand = max => Math.floor(Math.random() * max) // returns random number from 0 to max - 1
 const rotateShape = state => ({})
+const validMove = state => move => state.pos.x + move.x >= 0 && state.pos.x + move.x + state.shape.length - 1< state.cols
+const validPos = state => state.pos.y + state.shape.length < state.rows // ** fix later to account for empty (zero filled) shape arrays **
 const willJoin = state => ({})
 
 // next values for state properties
@@ -64,9 +72,12 @@ const nextBase = state => willJoin(state) ? joinTop(state) : state.base
 
 const nextfall = state => ({})
 
-const nextMove = () => ([])
+const nextMove = () => state.move.length > 0 ? state.move.slice(1) : state.move
 
-const nextPos = state => state.move.length == 0 ? {x: state.pos.x, y: state.pos.y + 1} : {x: state.pos.x + state.move[0].x, y: state.pos.y + 1}
+const nextPos = state => validPos(state) ? 
+(state.move.length == 0 ? {x: state.pos.x, y: state.pos.y + 1} 
+    : {x: state.pos.x + state.move[0].x, y: state.pos.y + state.move[0].y}) 
+    : state.pos 
 
 const nextScore = state => willJoin(state) ? ({}) : state.score // ** COMPLETE LATER**
 
@@ -92,13 +103,19 @@ const initState = () => ({
 const nextState = state => ({
     rows: state.rows,
     cols: state.cols,
-    base: nextBase(state),
-    shape: nextShape(state),    
-    fall: nextfall(state),
-    score: nextScore(state),
+    base: state.base,
+    shape: state.shape,    
+    fall: state.fall,
+    score: state.score,
+    // pos: {x: state.pos.x, y: state.pos.y + 1},
+    // move: state.move,
+    // base: nextBase(state),
+    // shape: nextShape(state),    
+    // fall: nextfall(state),
+    // score: nextScore(state),
     pos: nextPos(state),
     move: nextMove()
 })
 
 
-module.exports = {initState, nextState, LEFT, RIGHT}
+module.exports = {initState, nextState, enqueue, LEFT, RIGHT, DOWN}
