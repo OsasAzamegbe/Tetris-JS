@@ -46,9 +46,8 @@ const collide = state =>{
     const pos = nextPos(state)    
     for (let y = 0; y < state.shape.length; y++){
         for (let x = 0; x < state.shape[0].length; x++) {
-            if ((state.shape[y][x] !== 0 && 
-                state.base[y + pos.y][x + pos.x] !== 0) ||
-                pos.y + y == state.rows){
+            if ((state.shape[y][x] !== 0 && state.base[y + pos.y][x + pos.x] !== 0) ||
+                (state.shape[y][x] !== 0 && pos.y + y == state.base.length - 1)){
                     console.log(pos.y + y)
                     console.log("COLLISION")
                     return true
