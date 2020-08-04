@@ -42,6 +42,23 @@ const SHAPES = [S, Z, T, L, J, I, O]
 
 // functions
 
+const collide = state =>{
+    const pos = nextPos(state)    
+    for (let y = 0; y < state.shape.length; y++){
+        for (let x = 0; x < state.shape[0].length; x++) {
+            if ((state.shape[y][x] !== 0 && 
+                state.base[y + pos.y][x + pos.x] !== 0) ||
+                pos.y + y == state.rows){
+                    console.log(pos.y + y)
+                    console.log("COLLISION")
+                    return true
+                }
+        }
+    }
+    
+    return false
+}
+
 const createMatrix = rows => cols => {
     const matrix = []
     for (let i = 0; i < rows; i++){
@@ -49,15 +66,22 @@ const createMatrix = rows => cols => {
     }
     return matrix
 }
+
 const enqueue = state => move => validMove(state)(move) ? Object.assign(
     {}, state, {move: state.move.concat([move])}
 ) : state
 const joinTop = state => {
-    state = removeComplete(state)
-    // get min level
-    // check if next shape coordinates in base.minLevel
-        // add to that level if not present
-        // create new levels min - 1 for shape coordinates
+    // const pos = nextPos(state)
+    state.shape.forEach((row, y) =>{
+        row.forEach((val, x) =>{
+            if (val !== 0){
+                state.base[y + state.pos.y][x + state.pos.x] = val
+            }
+            
+        })
+    })
+    
+    return state.base
 }
 const rand = max => Math.floor(Math.random() * max) // returns random number from 0 to max - 1
 // remove complete level
@@ -99,7 +123,7 @@ const validPos = state =>{
 const willJoin = state => ({})
 
 // next values for state properties
-const nextBase = state => willJoin(state) ? joinTop(state) : state.base
+const nextBase = state => state.base
 
 const nextfall = state => ({})
 
@@ -112,7 +136,7 @@ const nextPos = state => validPos(state) ?
 
 const nextScore = state => willJoin(state) ? ({}) : state.score // ** COMPLETE LATER**
 
-const nextShape = state => willJoin(state) ? [SHAPES[rand(SHAPES.length)]] : state.move.length != 0 ? rotateShape(state) : state.shape
+const nextShape = state => state.move.length != 0 ? rotateShape(state) : state.shape
 
 
 // initial game state
@@ -133,22 +157,31 @@ const initState = () => ({
 
 
 // next game state
-const nextState = state => ({
+const nextState = state => {
+    if (collide(state)){
+        console.log("Reboot", state.pos)
+        return {
+            rows: state.rows,
+            cols: state.cols,
+            base: joinTop(state) ,
+            shape: SHAPES[rand(SHAPES.length)],    
+            fall: state.fall,
+            score: state.score,
+            pos: {x: (state.cols/2) - 1, y: 0},
+            move: nextMove()
+        }
+    }
+    return {
     rows: state.rows,
     cols: state.cols,
-    base: state.base,
+    base: nextBase(state),
     shape: state.shape,    
     fall: state.fall,
     score: state.score,
-    // pos: {x: state.pos.x, y: state.pos.y + 1},
-    // move: state.move,
-    // base: nextBase(state),
-    // shape: nextShape(state),    
-    // fall: nextfall(state),
-    // score: nextScore(state),
     pos: nextPos(state),
     move: nextMove()
-})
+    }
+}
 
 
 module.exports = {initState, nextState, enqueue, LEFT, RIGHT, DOWN}
