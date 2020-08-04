@@ -42,6 +42,13 @@ const SHAPES = [S, Z, T, L, J, I, O]
 
 // functions
 
+const createMatrix = rows => cols => {
+    const matrix = []
+    for (let i = 0; i < rows; i++){
+        matrix.push(new Array(cols).fill(0))
+    }
+    return matrix
+}
 const enqueue = state => move => validMove(state)(move) ? Object.assign(
     {}, state, {move: state.move.concat([move])}
 ) : state
@@ -112,7 +119,9 @@ const nextShape = state => willJoin(state) ? [SHAPES[rand(SHAPES.length)]] : sta
 const initState = () => ({
     rows: 50,
     cols: 30,
-    base: {}, // obj with levels from 0 to rows - 1 as keys storing points (blocks) in arrays
+    get base(){
+        return createMatrix(this.rows)(this.cols) // 2d array with width cols and height rows
+    }, 
     shape: T,    
     fall: true,
     score: 0,
