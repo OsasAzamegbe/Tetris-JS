@@ -2,6 +2,7 @@
 const DOWN = {x: 0, y: 1}
 const LEFT = {x: -1, y: 0}
 const RIGHT = {x: 1, y: 0}
+const ROTATE = "rotate" // might change
 const S = [
     [0, 1, 1],
     [1, 1, 0],
@@ -68,7 +69,6 @@ const enqueue = state => move => validMove(state)(move) ? Object.assign(
     {}, state, {move: state.move.concat([move])}
 ) : state
 const joinTop = state => {
-    // const pos = nextPos(state)
     state.shape.forEach((row, y) =>{
         row.forEach((val, x) =>{
             if (val !== 0){
@@ -90,7 +90,7 @@ const removeComplete = state => {
     })
     return state
 }
-const rotateShape = state => ({})
+const rotateShape = state => state.move[0] == ROTATE ? ({}) : state.shape
 const shapePadX = state => {
     let padL = state.shape.length
     let padR = 0
