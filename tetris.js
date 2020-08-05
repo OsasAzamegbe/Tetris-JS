@@ -2,7 +2,7 @@
 const DOWN = {x: 0, y: 1}
 const LEFT = {x: -1, y: 0}
 const RIGHT = {x: 1, y: 0}
-const ROTATE = "rotate" // might change
+const ROTATE = {x: 0, y: 0} // might change
 const S = [
     [0, 1, 1],
     [1, 1, 0],
@@ -57,6 +57,8 @@ const collide = state =>{
     return false
 }
 
+const computeShape = state => equal(ROTATE)(state.move[0]) ? rotateShape(state) : state.shape
+
 const createMatrix = rows => cols => {
     const matrix = []
     for (let i = 0; i < rows; i++){
@@ -68,6 +70,9 @@ const createMatrix = rows => cols => {
 const enqueue = state => move => validMove(state)(move) ? Object.assign(
     {}, state, {move: state.move.concat([move])}
 ) : state
+
+const equal = o1 => o2 => o1.x === o2.x && o1.y === o2.y
+
 const joinTop = state => {
     state.shape.forEach((row, y) =>{
         row.forEach((val, x) =>{
@@ -81,6 +86,7 @@ const joinTop = state => {
     return state.base
 }
 const rand = max => Math.floor(Math.random() * max) // returns random number from 0 to max - 1
+
 // remove complete level
 const removeComplete = state => {
     state.base.keys().forEach((key) => {
@@ -90,7 +96,17 @@ const removeComplete = state => {
     })
     return state
 }
-const rotateShape = state => state.move[0] == ROTATE ? ({}) : state.shape
+const rotateShape = state => {    
+    let shape = [...state.shape]    
+    for(let y = 0; y < shape.length; y++){
+        for (let x = 0; x < y; x++){
+            [shape[x][y], shape[y][x]] = [shape[y][x], shape[x][y]]
+        }
+    }
+    shape.forEach(row => row.reverse())
+    return shape
+
+}
 const shapePadX = state => {
     let padL = state.shape.length
     let padR = 0
@@ -105,6 +121,9 @@ const shapePadX = state => {
     return [padL, padR]
 }
 const validMove = state => move => {
+    if (move === ROTATE){
+        return true
+    }
     const [padL, padR] = shapePadX(state)
     return state.pos.x + move.x + padL >= 0 && state.pos.x + move.x + padR < state.cols
 }
@@ -133,7 +152,7 @@ const nextPos = state => validPos(state) ?
 
 const nextScore = state => willJoin(state) ? ({}) : state.score // ** COMPLETE LATER**
 
-const nextShape = state => state.move.length != 0 ? rotateShape(state) : state.shape
+const nextShape = state => state.move.length != 0 ? computeShape(state) : state.shape
 
 
 // initial game state
@@ -171,7 +190,7 @@ const nextState = state => {
     rows: state.rows,
     cols: state.cols,
     base: nextBase(state),
-    shape: state.shape,    
+    shape: nextShape(state),    
     fall: state.fall,
     score: state.score,
     pos: nextPos(state),
@@ -180,4 +199,4 @@ const nextState = state => {
 }
 
 
-module.exports = {initState, nextState, enqueue, LEFT, RIGHT, DOWN}
+module.exports = {initState, nextState, enqueue, LEFT, RIGHT, DOWN, ROTATE}
